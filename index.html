@@ -2,148 +2,102 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pencatatan Buwuhan</title>
   <meta name="description" content="Catat buwuhan tamu hajatan dengan rapi: input, data, laporan, dan cetak.">
   <meta name="theme-color" content="#ffae25">
-  <meta property="og:title" content="Pencatatan Buwuhan">
-  <meta property="og:description" content="Catat buwuhan tamu hajatan dengan rapi: input, data, laporan, dan cetak.">
   <link rel="icon" type="image/png" href="wallet.png">
   <link rel="apple-touch-icon" href="wallet.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f2f8e8;
-      --ink: #1c2a10;
-      --muted: #55664a;
-      --orange: #ff6b3a;
-      --orange-dark: #e4521f;
-      --gold: #ffae25;
-      --green: #78dc00;
-    }
+    :root { --ink: #1c2a10; --orange: #ff6b3a; --bg: #f2f8e8; }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
-      font-family: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.55;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     }
 
-    main {
-      flex: 1;
-      width: 100%;
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 48px 24px;
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 48px;
-      align-items: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.6rem, 7vw, 4.6rem);
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: -.03em;
-    }
-    .lead {
-      margin: 20px 0 0;
-      max-width: 34ch;
-      font-size: 1.15rem;
-      color: var(--muted);
-    }
-
-    .cta {
-      display: inline-flex;
+    .bar {
+      flex: none;
+      display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 32px;
-      padding: 16px 30px;
-      border-radius: 14px;
-      background: var(--orange);
-      color: #fff;
-      font: inherit;
-      font-weight: 700;
-      font-size: 1.1rem;
+      height: 44px;
+      padding: 0 14px;
+      padding-top: env(safe-area-inset-top, 0);
+      background: #ffae25;
+      box-sizing: content-box;
+    }
+    .bar img { width: 26px; height: 26px; display: block; }
+    .bar strong { flex: 1; font-size: 15px; letter-spacing: -.01em; }
+    .bar a {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
       text-decoration: none;
-      box-shadow: 0 6px 0 var(--orange-dark);
-      transition: transform .12s, box-shadow .12s;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .55);
     }
-    .cta:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--orange-dark); }
-    .cta:active { transform: translateY(6px); box-shadow: 0 0 0 var(--orange-dark); }
-    .cta:focus-visible, .hint a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    .bar a:hover { background: rgba(255, 255, 255, .85); }
+    .bar a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
-    .hint { margin: 22px 0 0; font-size: .95rem; color: var(--muted); max-width: 44ch; }
-    .hint a { color: var(--ink); font-weight: 600; }
+    .stage { position: relative; flex: 1; min-height: 0; }
+    iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
 
-    .art { display: grid; place-items: center; position: relative; }
-    .art img {
-      width: min(100%, 360px);
-      height: auto;
-      display: block;
-      position: relative;
-      z-index: 1;
-    }
-    .art::after {
-      content: "";
+    .loading {
       position: absolute;
-      bottom: 2%;
-      width: 62%;
-      height: 22px;
-      border-radius: 50%;
-      background: rgba(28, 42, 16, .14);
-      filter: blur(8px);
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: var(--bg);
+      transition: opacity .3s;
     }
-
-    footer {
-      padding: 20px 24px 28px;
-      text-align: center;
-      font-size: .85rem;
-      color: var(--muted);
-    }
-
-    @media (max-width: 760px) {
-      main { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; text-align: left; }
-      .art { order: -1; justify-items: start; }
-      .art img { width: 150px; }
-      .art::after { display: none; }
-      .cta { width: 100%; justify-content: center; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .cta { transition: none; }
-    }
+    .loading.done { opacity: 0; pointer-events: none; }
+    .loading img { width: 84px; height: 84px; animation: bob 1.4s ease-in-out infinite; }
+    .loading p { margin: 0; font-weight: 600; }
+    .loading small { color: #55664a; }
+    @keyframes bob { 50% { transform: translateY(-8px); } }
+    @media (prefers-reduced-motion: reduce) { .loading img { animation: none; } }
   </style>
 </head>
 <body>
 
-  <main>
-    <section>
-      <h1>Pencatatan Buwuhan</h1>
-      <p class="lead">Catat tamu dan nominal buwuhan hajatan Anda, lihat rekapnya, lalu cetak laporannya.</p>
+  <header class="bar">
+    <img src="wallet.png" alt="" width="26" height="26">
+    <strong>Pencatatan Buwuhan</strong>
+    <a id="open-tab" href="#" target="_blank" rel="noopener">Buka di tab baru</a>
+  </header>
 
-      <a class="cta"
-         href="https://script.google.com/macros/s/AKfycby24HMH_Ah7fJ6ICB4BXgjcncR_y5RZ7lCfhlSNhQIXg5H7UHMmy03AsTVTK7YyKNwwkQ/exec"
-         rel="noopener">Buka Aplikasi</a>
-
-      <p class="hint">Di HP, buka aplikasi lalu pilih menu browser &gt; <strong>Tambahkan ke layar utama</strong> agar mudah dibuka kembali.</p>
-    </section>
-
-    <div class="art">
-      <img src="wallet.png" alt="Dompet berisi uang kertas" width="512" height="512">
+  <div class="stage">
+    <div class="loading" id="loading">
+      <img src="wallet.png" alt="" width="84" height="84">
+      <p>Memuat aplikasi...</p>
+      <small>Jika tidak muncul, gunakan tombol "Buka di tab baru".</small>
     </div>
-  </main>
+    <iframe id="app" title="Aplikasi Pencatatan Buwuhan"
+            allow="clipboard-write; fullscreen"></iframe>
+  </div>
 
-  <footer>Pencatatan Buwuhan &copy; <span id="tahun"></span></footer>
+  <script>
+    // Ganti URL ini jika Web App Apps Script di-deploy ulang dengan URL baru
+    var APP_URL = 'https://script.google.com/macros/s/AKfycby24HMH_Ah7fJ6ICB4BXgjcncR_y5RZ7lCfhlSNhQIXg5H7UHMmy03AsTVTK7YyKNwwkQ/exec';
 
-  <script>document.getElementById('tahun').textContent = new Date().getFullYear();</script>
+    var frame = document.getElementById('app');
+    var loading = document.getElementById('loading');
+    document.getElementById('open-tab').href = APP_URL;
+
+    frame.addEventListener('load', function () { loading.classList.add('done'); });
+    frame.src = APP_URL;
+  </script>
 </body>
 </html>
